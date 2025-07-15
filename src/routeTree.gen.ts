@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SseIndexRouteImport } from './routes/sse/index'
+import { Route as ImagesIndexRouteImport } from './routes/images/index'
+import { Route as ImagesImageIdIndexRouteImport } from './routes/images/$imageId/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,49 @@ const SseIndexRoute = SseIndexRouteImport.update({
   path: '/sse/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImagesIndexRoute = ImagesIndexRouteImport.update({
+  id: '/images/',
+  path: '/images/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImagesImageIdIndexRoute = ImagesImageIdIndexRouteImport.update({
+  id: '/images/$imageId/',
+  path: '/images/$imageId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/images': typeof ImagesIndexRoute
   '/sse': typeof SseIndexRoute
+  '/images/$imageId': typeof ImagesImageIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/images': typeof ImagesIndexRoute
   '/sse': typeof SseIndexRoute
+  '/images/$imageId': typeof ImagesImageIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/images/': typeof ImagesIndexRoute
   '/sse/': typeof SseIndexRoute
+  '/images/$imageId/': typeof ImagesImageIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sse'
+  fullPaths: '/' | '/images' | '/sse' | '/images/$imageId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sse'
-  id: '__root__' | '/' | '/sse/'
+  to: '/' | '/images' | '/sse' | '/images/$imageId'
+  id: '__root__' | '/' | '/images/' | '/sse/' | '/images/$imageId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ImagesIndexRoute: typeof ImagesIndexRoute
   SseIndexRoute: typeof SseIndexRoute
+  ImagesImageIdIndexRoute: typeof ImagesImageIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SseIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/images/': {
+      id: '/images/'
+      path: '/images'
+      fullPath: '/images'
+      preLoaderRoute: typeof ImagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/images/$imageId/': {
+      id: '/images/$imageId/'
+      path: '/images/$imageId'
+      fullPath: '/images/$imageId'
+      preLoaderRoute: typeof ImagesImageIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ImagesIndexRoute: ImagesIndexRoute,
   SseIndexRoute: SseIndexRoute,
+  ImagesImageIdIndexRoute: ImagesImageIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
